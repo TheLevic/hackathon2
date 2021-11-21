@@ -20,7 +20,7 @@ bool Sesame = false;
 
 void userSetup(){
   string userName;
-  cout << "Hi, welcome to Allergens!\nWhat's your name?\n";
+  cout << "Hi, welcome to Allergen Pal!\nWhat's your name?\n";
   cin >> userName;
   cout << "Nice to meet you "+userName+"!\n";
   cout << "Which of the following food allergies do you have?\n";
@@ -54,60 +54,90 @@ void userSetup(){
 }
 
 void checkComp(std::string allergen){
+  bool safety=true;
+  
   if(Milk){
       if(allergen[0]=='1'){
+        safety=false;
       cout << "May contain traces of Milk\n\n";}
-      if(allergen[0]=='2')
-      {cout << "Contains Milk\n\n";}
+      else if(allergen[0]=='2')
+      {safety=false;
+        cout << "Contains Milk\n\n";}
     }
+
  if(Eggs){
   if(allergen[1]=='1')
-      {cout << "May contain traces of Eggs\n\n";}
-      if(allergen[1]=='2')
-      {cout << "Contains Eggs\n\n";}
+      {safety=false;
+      cout << "May contain traces of Eggs\n\n";}
+      else if(allergen[1]=='2')
+      {safety=false;
+      cout << "Contains Eggs\n\n";}
   }
+
  if(Fish){
   if(allergen[2]=='1')
-      {cout << "May contain traces of Fish\n\n";}
-      if(allergen[2]=='2')
-      {cout << "Contains Fish\n\n";}
+      {safety=false;
+      cout << "May contain traces of Fish\n\n";}
+      else if(allergen[2]=='2')
+      {safety=false;
+      cout << "Contains Fish\n\n";}
   }
   
  if(Shellfish){
   if(allergen[3]=='1')
-      {cout << "May contain traces of Shellfish\n\n";}
-      if(allergen[3]=='2')
-      {cout << "Contains Shellfish\n\n";}
+      {safety=false;
+      cout << "May contain traces of Shellfish\n\n";}
+      else if(allergen[3]=='2')
+      {safety=false;
+      cout << "Contains Shellfish\n\n";}
       }
+
  if(Treenuts){
   if(allergen[4]=='1')
-      {cout << "May contain traces of Treenuts\n\n";}
-      if(allergen[4]=='2')
-      {cout << "Contains Treenuts\n\n";}
+      {safety=false;
+      cout << "May contain traces of Treenuts\n\n";}
+      else if(allergen[4]=='2')
+      {safety=false;
+        cout << "Contains Treenuts\n\n";}
       }
+
  if(Peanuts){
   if(allergen[5]=='1')
-      {cout << "May contain traces of Peanuts\n\n";}
-      if(allergen[5]=='2')
-      {cout << "Contains\n\n";}
+      {safety=false;
+      cout << "May contain traces of Peanuts\n\n";}
+      else if(allergen[5]=='2')
+      {cout << "Contains Peanuts\n\n";}
       }
+
  if(Wheat){
   if(allergen[6]=='1')
-      {cout << "May contain traces of Wheat \n\n";}
-      if(allergen[6]=='2')
+      {safety=false;
+      cout << "May contain traces of Wheat \n\n";}
+      else if(allergen[6]=='2')
       {cout << "Contains Wheat \n\n";}
       }
+
  if(Soybean){
   if(allergen[7]=='1')
-      {cout << "May contain traces of Soybean\n\n";}
-      if(allergen[7]=='2')
+      {safety=false;
+      cout << "May contain traces of Soybean\n\n";}
+      else if(allergen[7]=='2')
       {cout << "Contains Soybean\n\n";}
       }
+
  if(Sesame){
   if(allergen[8]=='1')
-      {cout << "May contain traces of Sesame\n\n";}
-      if(allergen[8]=='2')
+      {safety=false;
+      cout << "May contain traces of Sesame\n\n";}
+      else if(allergen[8]=='2')
       {cout << "Contains Sesame\n\n";}
+  }
+
+  if (safety){
+    cout << "Congrats, that's safe to eat\n";
+  }
+  else {
+    cout << "Unfortunately, we cannot recommend eating this\n";
   }
 }
 
@@ -125,13 +155,20 @@ file.open("file.txt");
 
 int main(int argc, char* argv[]) {
    //Declarations
-   bool run;
    string allergies;
-   char *choice = new char[20];
+   char *choice = new char[40];
    string allergyList;
+   int outorin;
 
    //Getting data from user
    userSetup();
+
+   cout << "Which would you like to eat" << endl
+        <<  "1. At a restaurant" << endl
+        <<  "2. A snack" << endl;
+   cin >> outorin;
+
+if (outorin == 2){
    cout << "What would you like to eat today? " << endl
         << "1. Snickers" << endl
         << "2. Doritos" << endl
@@ -191,5 +228,78 @@ int main(int argc, char* argv[]) {
    }
    checkComp(allergen);
 return 0;
+}
+else{
+   string restaurant;
+   cout << "Where would you like to eat today?" << endl
+        << "1. Sushi101" << endl
+        << "2. Chickfila" << endl;
+   cin >> restaurant;
+   if (restaurant == "Sushi101"){
+   cout << "What would you like to eat there?" << endl
+        << "1. Shrimp Fried Rice" << endl
+        << "2. California Roll" << endl
+        << "3. Philadelphia Roll" << endl;
+        cin >> choice;
+   }
+   else if (restaurant == "Chickfila"){
+      cout << "What would you like to eat there?" << endl
+           << "1. Chickfila Sandwich" << endl
+           << "2. Grilled Chicken Sandwich" << endl
+           << "3. Nuggets" << endl;
+      cin >> choice;
+   }
+
+   
+
+   //Getting data from database
+   sqlite3 *db;
+   char *zErrMsg = 0;
+   int rc;
+   char *sql;
+   const char* data = "Callback function called";
+   char *statement = choice; //Need to change to input
+   /* Open database */
+   rc = sqlite3_open("Restaurants.db", &db);
+
+   /* Create SQL statement */
+   if (restaurant == "Sushi101"){
+      sql = "SELECT * from Sushi101 where Name = '";
+   }
+   else if(restaurant == "Chickfila"){
+      sql = "SELECT * from Chickfila where Name = '";
+   }
+   
+   char *tmp = new char[100];
+   strcpy(tmp,sql);
+   strcat(tmp,statement);
+   strcat(tmp,"'");
+   /* Execute SQL statement */
+   rc = sqlite3_exec(db,tmp, callback, (void*)data, &zErrMsg);
+   
+   if( rc != SQLITE_OK ) {
+//      fprintf(stderr, "SQL error: %s\n", zErrMsg);
+      sqlite3_free(zErrMsg);
+   } else {
+//      fprintf(stdout, "Operation done successfully\n");
+   }
+   sqlite3_close(db);
+
+   string allergen="";
+   //Getting data from file
+   string fromFile;
+   ifstream file;
+   file.open("file.txt");
+   file >> fromFile;
+   file.close();
+   for (int i = fromFile.size() - 9; i < fromFile.size(); i++){
+      if(isdigit(fromFile[i])){
+          allergen.append(1,fromFile[i]);
+      }
+   }
+   checkComp(allergen);
+return 0;
+}
+   
 }
 
